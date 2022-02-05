@@ -1,6 +1,19 @@
 <template>
   <div class="play-space">
-    <div class="balans">{{ balans }}</div>
+    <div class="balans">{{ currentBalans }}</div>
+    <button
+      class="balans-btn"
+      @click="
+        addMoney();
+        soundClick();
+      "
+    >
+      Заработать
+      <i class="fas fa-coins"></i>
+    </button>
+    <audio src="../assets/audio/click-btn-coin.mp3" ref="audiocoin">
+      АУДИО
+    </audio>
   </div>
 </template>
 
@@ -10,6 +23,27 @@ export default {
     return {
       balans: 0,
     };
+  },
+  methods: {
+    addMoney() {
+      this.balans += 1;
+    },
+    soundClick() {
+      this.$refs.audiocoin.play();
+    },
+  },
+  computed: {
+    currentBalans() {
+      return Math.floor(this.balans);
+    },
+    passiveProfit() {
+      return 1;
+    }
+  },
+  mounted() {
+    setInterval(() => {
+      this.balans += this.passiveProfit;
+    }, 1000);
   },
 };
 </script>
@@ -49,5 +83,18 @@ export default {
   height: 50px;
   background-image: url('../assets/img/gold-coin.png');
   background-size: 50px 50px;
+}
+.balans-btn {
+  padding: 10px 20px;
+  font-size: 24px;
+  border: 2px solid black;
+  background-color: rgb(216, 231, 2);
+  color: black;
+  box-shadow: 2px 3px rgba(0, 0, 0, 0.562);
+  margin: 0 auto;
+  display: block;
+  margin-top: 50px;
+  cursor: pointer;
+  border-radius: 30px;
 }
 </style>
