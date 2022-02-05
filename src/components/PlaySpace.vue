@@ -40,11 +40,22 @@ export default {
       return 1;
     }
   },
+  created() {
+    const balansHistory = JSON.parse(localStorage.getItem('balans'));
+    if (balansHistory) {
+      this.balans = balansHistory;
+    }
+  },
   mounted() {
     setInterval(() => {
       this.balans += this.passiveProfit;
     }, 1000);
   },
+  watch: {
+    balans() {
+      localStorage.setItem('balans', JSON.stringify(this.balans))
+    }
+  }
 };
 </script>
 
