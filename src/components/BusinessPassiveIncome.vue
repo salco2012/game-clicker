@@ -7,13 +7,23 @@
     <div class="business__info">
       <h2 class="business__title">{{ title }}</h2>
       <p class="business__description">
-        + {{ income }} монет <br/> <span class="business__description-black">к пассивному доходу</span>
+        + {{ income }} монет <br />
+        <span class="business__description-black">к пассивному доходу</span>
       </p>
       <div class="business__acquisition">
         <p class="business__price">
           Стоимость: <span class="business__price-bold">{{ price }} монет</span>
         </p>
-        <button class="business__buy" @click="$emit('byu-business', $event)">Купить</button>
+        <p class="business__bought">
+          Купленно: <span class="business__bought-bold">{{ bought }}</span> ед.
+        </p>
+        <button
+          class="business__buy"
+          :disabled="!isAvailablePurchase"
+          @click="$emit('byu-business', { price, income, title })"
+        >
+          Купить
+        </button>
       </div>
     </div>
   </div>
@@ -36,6 +46,15 @@ export default {
     price: {
       typeof: Number,
       default: '-',
+    },
+    bought: {
+      typeof: Number,
+      default: 0,
+    },
+    isAvailablePurchase: {
+      typeof: Boolean,
+      require: true,
+      default: false,
     },
   },
 };
@@ -70,18 +89,25 @@ export default {
     color: $color_1;
     text-shadow: 1px 1px 1px black;
     margin-bottom: 10px;
-    &-black{
-       color: black;
-       text-shadow: none;
-       font-weight: 400;
+    &-black {
+      color: black;
+      text-shadow: none;
+      font-weight: 400;
     }
   }
   &__price {
-     margin-bottom: 10px;
     &-bold {
       font-weight: bold;
     }
   }
+
+  &__bought {
+    margin-bottom: 10px;
+    &-bold {
+      font-weight: bold;
+    }
+  }
+
   &__buy {
     cursor: pointer;
     padding: 5px 10px;
@@ -93,9 +119,12 @@ export default {
       background-color: $color_2;
       transform: scale(1.1);
     }
+    &:disabled {
+       transform: none;
+       background-color: rgba(155, 153, 153, 0.938);
+    }
   }
-  &__acquisition{
-
+  &__acquisition {
   }
 }
 </style>
