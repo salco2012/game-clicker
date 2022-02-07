@@ -4,6 +4,7 @@
       <div class="play-space__balans">{{ currentBalans }}</div>
       <switch-radio class="play-space__switch" @change="ringtoneStatus" />
     </div>
+    <business-passive-income />
     <button class="balans-btn" @click="addMoney()">
       Заработать
       <i class="fas fa-coins"></i>
@@ -19,10 +20,12 @@
 
 <script>
 import SwitchRadio from '../components/SwitchRadio.vue';
+import BusinessPassiveIncome from '../components/BusinessPassiveIncome.vue';
 
 export default {
   components: {
     SwitchRadio,
+    BusinessPassiveIncome,
   },
   data() {
     return {
@@ -113,26 +116,7 @@ export default {
 }
 
 .balans-btn {
-  cursor: pointer;
-  background-color: gold;
-  color: black;
-  padding: 10px 20px;
-  font-size: 22px;
-  border-radius: 10px;
-  border: none;
-  position: relative;
-  left: 50%;
-  transform: translate(-50%);
-  box-shadow: 0 10px 0 rgb(196, 160, 2), 0 5px 20px;
-  transition: all 0.2 ease;
-  &:hover {
-    top: 2px;
-    box-shadow: 0 8px 0 rgb(196, 160, 2), 0 5px 20px;
-  }
-  &:active {
-    box-shadow: none;
-    top: 10px;
-  }
+  @extend %baseButton;
 }
 
 .top-wrapper {

@@ -21,4 +21,7 @@ body {
   padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+p {
+  margin: 0;
+};
 </style>
