@@ -63,7 +63,7 @@ export default {
 <style lang="scss" scoped>
 .business {
   width: 580px;
-  height: 180px;
+  height: 200px;
   background-color: rgba(255, 255, 255, 0.507);
   border-radius: 20px;
   box-shadow: 2px 2px 5px black;

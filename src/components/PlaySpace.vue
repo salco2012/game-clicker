@@ -7,14 +7,19 @@
     <div class="play-space__statistics statistics">
       <p class="statistics__passiveIncome">
         Текущий пассивный доход:
-        <span class="statistics__passiveIncome-bold">{{ passiveIncome }} ед.</span>
+        <span class="statistics__passiveIncome-bold"
+          >{{ userInfo.passiveIncome }} ед.</span
+        >
       </p>
       <p class="statistics__clickIncome">
         Доход при клике:
-        <span class="statistics__clickIncome-bold">{{ clickIncome }} ед.</span>
+        <span class="statistics__clickIncome-bold"
+          >{{ userInfo.clickIncome }} ед.</span
+        >
       </p>
       <p class="statistics__factor">
-        Множитель: <span class="statistics__factor-bold">x{{ factor }}</span>
+        Множитель:
+        <span class="statistics__factor-bold">x{{ userInfo.factor }}</span>
       </p>
     </div>
     <div class="play-space__main-content">
@@ -71,11 +76,13 @@ export default {
   },
   data() {
     return {
-      balans: 0,
-      passiveIncome: 1,
-      clickIncome: 1,
-      factor: 1,
-      incomeInterval: 1,
+      userInfo: {
+        balans: 0,
+        passiveIncome: 1,
+        clickIncome: 1,
+        factor: 1,
+        incomeInterval: 1,
+      },
       allBusiness: [
         {
           img: 'flea-market.jpg',
@@ -146,7 +153,7 @@ export default {
   },
   methods: {
     addMoney() {
-      this.balans += 15;
+      this.userInfo.balans += 15;
       this.soundClick();
     },
     soundClick() {
@@ -165,12 +172,14 @@ export default {
       audioBuy.play();
     },
     byuBusiness({ price, income, title }) {
-      this.balans -= price; // Уменьшаем баланс
-      this.passiveIncome += income; // Увеличиваем пассивный доход
+      this.userInfo.balans -= price; // Уменьшаем баланс
+      this.userInfo.passiveIncome += income; // Увеличиваем пассивный доход
 
+      // Перезаписываем кол-во купленных бизнесов и увеличиваем стоимость последующего.
       this.allBusiness.filter((item) => {
         if (item.title === title) {
           item.bought += 1;
+          item.price += Math.floor((item.price / 100) * 10);
         }
       });
 
@@ -179,30 +188,33 @@ export default {
   },
   computed: {
     currentBalans() {
-      return Math.floor(this.balans);
+      return Math.floor(this.userInfo.balans);
     },
   },
   created() {
     const balansHistory = JSON.parse(localStorage.getItem('balans'));
     if (balansHistory) {
-      this.balans = balansHistory;
+      this.userInfo.balans = balansHistory;
     }
   },
   mounted() {
     setInterval(() => {
-      this.balans += this.passiveIncome;
+      this.userInfo.balans += this.userInfo.passiveIncome;
     }, 1000);
   },
   watch: {
-    balans() {
-      localStorage.setItem('balans', JSON.stringify(this.balans));
-      this.allBusiness.forEach((item) => {
-        if (this.balans >= item.price) {
-          item.isAvailablePurchase = true;
-        } else {
-          item.isAvailablePurchase = false;
-        }
-      });
+    userInfo: {
+      handler: function () {
+        localStorage.setItem('balans', JSON.stringify(this.userInfo.balans));
+        this.allBusiness.forEach((item) => {
+          if (this.userInfo.balans >= item.price) {
+            item.isAvailablePurchase = true;
+          } else {
+            item.isAvailablePurchase = false;
+          }
+        });
+      },
+      deep: true,
     },
   },
 };
