@@ -38,7 +38,7 @@ export default {
     },
     passiveProfit() {
       return 1;
-    }
+    },
   },
   created() {
     const balansHistory = JSON.parse(localStorage.getItem('balans'));
@@ -53,13 +53,13 @@ export default {
   },
   watch: {
     balans() {
-      localStorage.setItem('balans', JSON.stringify(this.balans))
-    }
-  }
+      localStorage.setItem('balans', JSON.stringify(this.balans));
+    },
+  },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .play-space {
   padding-top: 50px;
   background-image: url('../assets/img/backround.jpg');
@@ -84,28 +84,37 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.balans::before {
-  content: '';
-  position: absolute;
-  left: -10px;
-  top: -5px;
-  width: 50px;
-  height: 50px;
-  background-image: url('../assets/img/gold-coin.png');
-  background-size: 50px 50px;
+  &::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: -5px;
+    width: 50px;
+    height: 50px;
+    background-image: url('../assets/img/gold-coin.png');
+    background-size: 50px 50px;
+  }
 }
 .balans-btn {
-  padding: 10px 20px;
-  font-size: 24px;
-  border: 2px solid black;
-  background-color: rgb(216, 231, 2);
-  color: black;
-  box-shadow: 2px 3px rgba(0, 0, 0, 0.562);
-  margin: 0 auto;
-  display: block;
-  margin-top: 50px;
   cursor: pointer;
-  border-radius: 30px;
+  background-color: gold;
+  color: black;
+  padding: 10px 20px;
+  font-size: 22px;
+  border-radius: 10px;
+  border: none;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
+  box-shadow: 0 10px 0 rgb(196, 160, 2), 0 5px 20px;
+  transition: all 0.2 ease;
+  &:hover {
+    top: 2px;
+    box-shadow: 0 8px 0 rgb(196, 160, 2), 0 5px 20px;
+  }
+  &:active {
+    box-shadow: none;
+    top: 10px;
+  }
 }
 </style>
