@@ -7,7 +7,7 @@
     <div class="business__info">
       <h2 class="business__title">{{ title }}</h2>
       <p class="business__description">
-        + {{ income }} монет <br />
+        + {{ income * factor }} монет <br />
         <span class="business__description-black">к пассивному доходу</span>
       </p>
       <div class="business__acquisition">
@@ -20,7 +20,7 @@
         <p class="business__total-income-point">
           Общий доход с точки:
           <span class="business__total-income-point-bold">
-            {{ totalIncomePoint }} монет
+            {{ totalIncomePoint * factor }} монет
           </span>
         </p>
         <button
@@ -39,32 +39,33 @@
 export default {
   props: {
     img: {
-      typeof: String,
+      type: String,
       require: true,
     },
     title: {
-      typeof: String,
+      type: String,
     },
     income: {
-      typeof: Number,
-      default: '-',
+      type: Number,
     },
     price: {
-      typeof: Number,
-      default: '-',
+      type: Number,
     },
     bought: {
-      typeof: Number,
+      type: Number,
       default: 0,
     },
     isAvailablePurchase: {
-      typeof: Boolean,
+      type: Boolean,
       require: true,
       default: false,
     },
     totalIncomePoint: {
-      typeof: Boolean,
+      type: Number,
       default: 0,
+    },
+    factor: {
+      type: Number,
     },
   },
 };
@@ -80,7 +81,7 @@ export default {
   display: flex;
   align-items: center;
   margin: 0 20px 20px 20px;
-  &:nth-child(4){
+  &:nth-child(4) {
     margin-bottom: 0;
   }
   &__img {

@@ -2,34 +2,36 @@
   <div class="play-space">
     <div class="play-space__top-content">
       <div class="play-space__balans">{{ currentBalans }}</div>
+      <IncomeFactor
+        :factor="userInfo.factor"
+        :balans="userInfo.balans"
+        @reset-progress="resetProgress"
+      />
       <SwitchRadio class="play-space__switch" @change="ringtoneStatus" />
-    </div>
-    <div class="play-space__statistics statistics">
-      <p class="statistics__passiveIncome">
-        Текущий пассивный доход:
-        <span class="statistics__passiveIncome-bold"
-          >{{ userInfo.passiveIncome }} монет</span
-        >
-      </p>
-      <p class="statistics__clickIncome">
-        Доход при клике:
-        <span class="statistics__clickIncome-bold"
-          >{{ userInfo.clickIncome }} монет</span
-        >
-      </p>
-      <p class="statistics__factor">
-        Множитель:
-        <span class="statistics__factor-bold">x{{ userInfo.factor }}</span>
-      </p>
     </div>
     <div class="play-space__main-content">
       <div>
         <BusinessPassiveIncome
           v-for="business in allBusiness.slice(0, 4)"
           :key="business.title"
+          :factor="userInfo.factor"
           v-bind="business"
           @byu-business="byuBusiness"
         />
+      </div>
+      <div class="play-space__statistics statistics">
+        <p class="statistics__passiveIncome">
+          Пассивный доход:
+          <span class="statistics__passiveIncome-bold"
+            >{{ userInfo.passiveIncome * userInfo.factor }} монет</span
+          >
+        </p>
+        <p class="statistics__clickIncome">
+          Доход при клике:
+          <span class="statistics__clickIncome-bold"
+            >{{ clickRevenue }} монет</span
+          >
+        </p>
       </div>
       <div class="play-space__character-wrapper">
         <img
@@ -52,12 +54,13 @@
         <BusinessPassiveIncome
           v-for="business in allBusiness.slice(4, 8)"
           :key="business.title"
+          :factor="userInfo.factor"
           v-bind="business"
           @byu-business="byuBusiness"
         />
       </div>
     </div>
-    <audio src="../assets/audio/click-btn-coin.mp3" ref="audiocoin"></audio>
+    <audio src="../assets/audio/click-btn.mp3" ref="audiocoin"></audio>
     <audio
       src="../assets/audio/background-melody.mp3"
       loop="true"
@@ -69,14 +72,15 @@
 <script>
 import SwitchRadio from '../components/SwitchRadio.vue';
 import BusinessPassiveIncome from '../components/BusinessPassiveIncome.vue';
+import IncomeFactor from '../components/IncomeFactor.vue';
 import soundBuy from '../assets/audio/buy.mp3';
 import soundMillionDollars from '../assets/audio/million-dollarov-ssha.mp3';
-
 
 export default {
   components: {
     SwitchRadio,
     BusinessPassiveIncome,
+    IncomeFactor,
   },
   data() {
     return {
@@ -93,7 +97,7 @@ export default {
         {
           img: 'flea-market.jpg',
           title: 'Местовое на барахолке',
-          income: 5,
+          income: 3,
           price: 150,
           bought: 0,
           isAvailablePurchase: false,
@@ -101,7 +105,7 @@ export default {
         {
           img: 'shawarma-stall.jpg',
           title: 'Ларек шаурмы',
-          income: 25,
+          income: 10,
           price: 900,
           bought: 0,
           isAvailablePurchase: false,
@@ -109,7 +113,7 @@ export default {
         {
           img: 'mine.jpg',
           title: 'Рудниковая шахта',
-          income: 125,
+          income: 25,
           price: 5400,
           bought: 0,
           isAvailablePurchase: false,
@@ -117,7 +121,7 @@ export default {
         {
           img: 'woodworking.jpg',
           title: 'Завод по обработке дерева',
-          income: 625,
+          income: 80,
           price: 32400,
           bought: 0,
           isAvailablePurchase: false,
@@ -125,7 +129,7 @@ export default {
         {
           img: 'hypermarket.jpg',
           title: 'Гипермаркет',
-          income: 3125,
+          income: 200,
           price: 194400,
           bought: 0,
           isAvailablePurchase: false,
@@ -133,7 +137,7 @@ export default {
         {
           img: 'jewelry-stores.jpg',
           title: 'Сеть ювелирных магазинов',
-          income: 78125,
+          income: 1000,
           price: 1166400,
           bought: 0,
           isAvailablePurchase: false,
@@ -141,7 +145,7 @@ export default {
         {
           img: 'avia.jpg',
           title: 'Авиакомпания',
-          income: 15625,
+          income: 2500,
           price: 3000000,
           bought: 0,
           isAvailablePurchase: false,
@@ -149,7 +153,7 @@ export default {
         {
           img: 'petroleum.jpg',
           title: 'Нефтедобыча',
-          income: 390625,
+          income: 7500,
           price: 6998400,
           bought: 0,
           isAvailablePurchase: false,
@@ -159,8 +163,84 @@ export default {
   },
   methods: {
     addMoney() {
-      this.userInfo.balans += this.userInfo.clickIncome;
+      this.userInfo.balans += this.userInfo.clickIncome * this.userInfo.factor;
       this.soundClick();
+    },
+    resetProgress() {
+      this.userInfo.balans = 0;
+      this.userInfo.factor += 1;
+      this.userInfo.congratulations = false;
+      this.userInfo.passiveIncome = 1;
+      this.userInfo.clickIncome = 1;
+      this.userInfo.incomeInterval = 1;
+
+      // Перезаписал данные которые были при инициализации. Так как при удалении из localStorage данные реактивно не обновятся. Доп. вариант переписать все на VueX, возможно потом переделаю.
+      this.allBusiness = [
+        {
+          img: 'flea-market.jpg',
+          title: 'Местовое на барахолке',
+          income: 3,
+          price: 150,
+          bought: 0,
+          isAvailablePurchase: false,
+        },
+        {
+          img: 'shawarma-stall.jpg',
+          title: 'Ларек шаурмы',
+          income: 10,
+          price: 900,
+          bought: 0,
+          isAvailablePurchase: false,
+        },
+        {
+          img: 'mine.jpg',
+          title: 'Рудниковая шахта',
+          income: 25,
+          price: 5400,
+          bought: 0,
+          isAvailablePurchase: false,
+        },
+        {
+          img: 'woodworking.jpg',
+          title: 'Завод по обработке дерева',
+          income: 80,
+          price: 32400,
+          bought: 0,
+          isAvailablePurchase: false,
+        },
+        {
+          img: 'hypermarket.jpg',
+          title: 'Гипермаркет',
+          income: 200,
+          price: 194400,
+          bought: 0,
+          isAvailablePurchase: false,
+        },
+        {
+          img: 'jewelry-stores.jpg',
+          title: 'Сеть ювелирных магазинов',
+          income: 1000,
+          price: 1166400,
+          bought: 0,
+          isAvailablePurchase: false,
+        },
+        {
+          img: 'avia.jpg',
+          title: 'Авиакомпания',
+          income: 2500,
+          price: 3000000,
+          bought: 0,
+          isAvailablePurchase: false,
+        },
+        {
+          img: 'petroleum.jpg',
+          title: 'Нефтедобыча',
+          income: 7500,
+          price: 6998400,
+          bought: 0,
+          isAvailablePurchase: false,
+        },
+      ];
     },
     soundClick() {
       this.$refs.audiocoin.play();
@@ -184,7 +264,7 @@ export default {
       this.allBusiness.filter((item) => {
         if (item.title === title) {
           item.bought += 1;
-          item.price += Math.floor((item.price / 100) * 50);
+          item.price += Math.floor((item.price / 100) * 75);
           item.totalIncomePoint = item.bought ? item.income * item.bought : 0;
         }
       });
@@ -201,33 +281,34 @@ export default {
     currentBalans() {
       return Math.floor(this.userInfo.balans);
     },
+    clickRevenue() {
+      // Высчитываем доход от клика с учетом множителя
+      return this.userInfo.clickIncome * this.userInfo.factor;
+    },
   },
   created() {
-    try {
-      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      if (userInfo) {
-        this.userInfo = userInfo;
-      }
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    if (userInfo) {
+      this.userInfo = userInfo;
+    }
 
-      const allBusiness = JSON.parse(localStorage.getItem('allBusiness'));
-      if (allBusiness.length >= 1) {
-        this.allBusiness = allBusiness;
-      }
-    } catch (error) {
-      console.error(error.message);
+    const allBusiness = JSON.parse(localStorage.getItem('allBusiness'));
+    if (allBusiness.length >= 1) {
+      this.allBusiness = allBusiness;
     }
   },
   mounted() {
     setInterval(() => {
-      this.userInfo.balans += this.userInfo.passiveIncome;
-    }, 12440);
+      this.userInfo.balans +=
+        this.userInfo.passiveIncome * this.userInfo.factor;
+    }, 1000);
   },
   watch: {
     userInfo: {
       handler: function (newValue) {
         localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
         this.allBusiness.forEach((item) => {
-          if (this.userInfo.balans >= item.price) {
+          if (this.currentBalans >= item.price) {
             item.isAvailablePurchase = true;
           } else {
             item.isAvailablePurchase = false;
@@ -253,9 +334,9 @@ export default {
 
 <style lang="scss" scoped>
 .play-space {
-  padding-top: 50px;
+  padding-top: 20px;
   background-image: url('../assets/img/backround.jpg');
-  min-height: calc(100vh - 50px);
+  min-height: 100vh;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -274,7 +355,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 20px 20px 0;
+    margin: 0 30px 0 0;
     &::before {
       content: '';
       position: absolute;
@@ -291,19 +372,23 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    position: relative;
   }
 
   &__top-content {
     display: flex;
     justify-content: center;
-    margin-left: 80px;
+    align-items: flex-end;
+    margin: 0 0 40px 330px;
   }
 
   &__statistics {
-    margin: 0 auto;
+    top: 40px;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 400px;
     height: 80px;
-    position: relative;
+    position: absolute;
     background-color: rgba(255, 255, 255, 0.507);
     border-radius: 20px;
     box-shadow: 2px 2px 5px black;
@@ -343,10 +428,8 @@ export default {
     z-index: 2;
   }
 }
-
 .statistics__passiveIncome-bold,
-.statistics__clickIncome-bold,
-.statistics__factor-bold {
+.statistics__clickIncome-bold {
   font-weight: bold;
 }
 
