@@ -49,6 +49,10 @@
           Заработать
           <i class="fas fa-coins"></i>
         </button>
+        <button class="upgrade-click">
+          Улучшения
+          <i class="fas fa-bolt"></i>
+        </button>
       </div>
       <div>
         <BusinessPassiveIncome
@@ -66,6 +70,7 @@
       loop="true"
       ref="backgroundMelody"
     ></audio>
+    <UpgradeModal />
   </div>
 </template>
 
@@ -73,6 +78,7 @@
 import SwitchRadio from '../components/SwitchRadio.vue';
 import BusinessPassiveIncome from '../components/BusinessPassiveIncome.vue';
 import IncomeFactor from '../components/IncomeFactor.vue';
+import UpgradeModal from '../components/UpgradeModal.vue';
 import soundBuy from '../assets/audio/buy.mp3';
 import soundMillionDollars from '../assets/audio/million-dollarov-ssha.mp3';
 
@@ -81,6 +87,7 @@ export default {
     SwitchRadio,
     BusinessPassiveIncome,
     IncomeFactor,
+    UpgradeModal,
   },
   data() {
     return {
@@ -437,7 +444,21 @@ export default {
   @extend %baseButton;
   bottom: 1px;
   left: 1px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   z-index: 4;
+}
+
+.upgrade-click {
+  @extend %baseButton;
+  background-color: $color_2;
+  box-shadow: 0 10px 0 $color_3, 0 5px 20px;
+  &:hover {
+    top: 2px;
+    box-shadow: 0 8px 0 $color_3, 0 5px 20px;
+  }
+  &:active {
+    box-shadow: none;
+    top: 10px;
+  }
 }
 </style>
