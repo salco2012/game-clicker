@@ -17,6 +17,12 @@
         <p class="business__bought">
           Купленно: <span class="business__bought-bold">{{ bought }}</span> ед.
         </p>
+        <p class="business__total-income-point">
+          Общий доход с точки:
+          <span class="business__total-income-point-bold">
+            {{ totalIncomePoint }} монет
+          </span>
+        </p>
         <button
           class="business__buy"
           :disabled="!isAvailablePurchase"
@@ -56,6 +62,10 @@ export default {
       require: true,
       default: false,
     },
+    totalIncomePoint: {
+      typeof: Boolean,
+      default: 0,
+    },
   },
 };
 </script>
@@ -69,13 +79,17 @@ export default {
   box-shadow: 2px 2px 5px black;
   display: flex;
   align-items: center;
-  margin: 0 0 20px 20px;
+  margin: 0 20px 20px 20px;
+  &:nth-child(4){
+    margin-bottom: 0;
+  }
   &__img {
     display: block;
     width: 230px;
     height: 100%;
     border-radius: 20px 0 0 20px;
     margin-right: 20px;
+    object-fit: cover;
   }
   &__title {
     font-size: 20px;
@@ -102,6 +116,12 @@ export default {
   }
 
   &__bought {
+    &-bold {
+      font-weight: bold;
+    }
+  }
+
+  &__total-income-point {
     margin-bottom: 10px;
     &-bold {
       font-weight: bold;
@@ -120,11 +140,9 @@ export default {
       transform: scale(1.1);
     }
     &:disabled {
-       transform: none;
-       background-color: rgba(155, 153, 153, 0.938);
+      transform: none;
+      background-color: rgba(155, 153, 153, 0.938);
     }
-  }
-  &__acquisition {
   }
 }
 </style>

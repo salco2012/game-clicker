@@ -2,19 +2,19 @@
   <div class="play-space">
     <div class="play-space__top-content">
       <div class="play-space__balans">{{ currentBalans }}</div>
-      <switch-radio class="play-space__switch" @change="ringtoneStatus" />
+      <SwitchRadio class="play-space__switch" @change="ringtoneStatus" />
     </div>
     <div class="play-space__statistics statistics">
       <p class="statistics__passiveIncome">
         Текущий пассивный доход:
         <span class="statistics__passiveIncome-bold"
-          >{{ userInfo.passiveIncome }} ед.</span
+          >{{ userInfo.passiveIncome }} монет</span
         >
       </p>
       <p class="statistics__clickIncome">
         Доход при клике:
         <span class="statistics__clickIncome-bold"
-          >{{ userInfo.clickIncome }} ед.</span
+          >{{ userInfo.clickIncome }} монет</span
         >
       </p>
       <p class="statistics__factor">
@@ -24,33 +24,35 @@
     </div>
     <div class="play-space__main-content">
       <div>
-        <business-passive-income
-          v-for="bisines in allBusiness.slice(0, 4)"
-          :key="bisines.title"
-          :title="bisines.title"
-          :income="bisines.income"
-          :price="bisines.price"
-          :img="bisines.img"
-          :bought="bisines.bought"
-          :isAvailablePurchase="bisines.isAvailablePurchase"
+        <BusinessPassiveIncome
+          v-for="business in allBusiness.slice(0, 4)"
+          :key="business.title"
+          v-bind="business"
           @byu-business="byuBusiness"
         />
       </div>
-      <div>
+      <div class="play-space__character-wrapper">
+        <img
+          class="play-space__character-img"
+          src="../assets/img/character.png"
+          alt="character"
+        />
+        <img
+          class="play-space__treasure-img"
+          src="../assets/img/treasure.png"
+          alt="treasure"
+          v-if="userInfo.isDisplayCharacter"
+        />
         <button class="balans-btn" @click="addMoney()">
           Заработать
           <i class="fas fa-coins"></i>
         </button>
       </div>
       <div>
-        <business-passive-income
-          v-for="bisines in allBusiness.slice(4, 8)"
-          :key="bisines.title"
-          :title="bisines.title"
-          :income="bisines.income"
-          :price="bisines.price"
-          :img="bisines.img"
-          :isAvailablePurchase="bisines.isAvailablePurchase"
+        <BusinessPassiveIncome
+          v-for="business in allBusiness.slice(4, 8)"
+          :key="business.title"
+          v-bind="business"
           @byu-business="byuBusiness"
         />
       </div>
@@ -68,6 +70,8 @@
 import SwitchRadio from '../components/SwitchRadio.vue';
 import BusinessPassiveIncome from '../components/BusinessPassiveIncome.vue';
 import soundBuy from '../assets/audio/buy.mp3';
+import soundMillionDollars from '../assets/audio/million-dollarov-ssha.mp3';
+
 
 export default {
   components: {
@@ -79,9 +83,11 @@ export default {
       userInfo: {
         balans: 0,
         passiveIncome: 1,
-        clickIncome: 1,
         factor: 1,
+        clickIncome: 1,
         incomeInterval: 1,
+        isDisplayCharacter: false,
+        congratulations: false, // Флаг отвечающий за поздравление игрока со статусом миллионера
       },
       allBusiness: [
         {
@@ -142,7 +148,7 @@ export default {
         },
         {
           img: 'petroleum.jpg',
-          title: 'Нефтедобывающее производство',
+          title: 'Нефтедобыча',
           income: 390625,
           price: 6998400,
           bought: 0,
@@ -153,7 +159,7 @@ export default {
   },
   methods: {
     addMoney() {
-      this.userInfo.balans += 15;
+      this.userInfo.balans += this.userInfo.clickIncome;
       this.soundClick();
     },
     soundClick() {
@@ -166,8 +172,7 @@ export default {
         this.$refs.backgroundMelody.pause();
       }
     },
-    soundBuy(price, income, isAvailablePurchase) {
-      console.log(price, income, isAvailablePurchase);
+    soundBuy() {
       const audioBuy = new Audio(soundBuy);
       audioBuy.play();
     },
@@ -179,11 +184,17 @@ export default {
       this.allBusiness.filter((item) => {
         if (item.title === title) {
           item.bought += 1;
-          item.price += Math.floor((item.price / 100) * 10);
+          item.price += Math.floor((item.price / 100) * 50);
+          item.totalIncomePoint = item.bought ? item.income * item.bought : 0;
         }
       });
 
       this.soundBuy(); // Проигрываем мелодию при покупке
+    },
+    becameMillionaire() {
+      this.userInfo.isDisplayCharacter = true;
+      const audio = new Audio(soundMillionDollars);
+      audio.play();
     },
   },
   computed: {
@@ -192,20 +203,29 @@ export default {
     },
   },
   created() {
-    const balansHistory = JSON.parse(localStorage.getItem('balans'));
-    if (balansHistory) {
-      this.userInfo.balans = balansHistory;
+    try {
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      if (userInfo) {
+        this.userInfo = userInfo;
+      }
+
+      const allBusiness = JSON.parse(localStorage.getItem('allBusiness'));
+      if (allBusiness.length >= 1) {
+        this.allBusiness = allBusiness;
+      }
+    } catch (error) {
+      console.error(error.message);
     }
   },
   mounted() {
     setInterval(() => {
       this.userInfo.balans += this.userInfo.passiveIncome;
-    }, 1000);
+    }, 12440);
   },
   watch: {
     userInfo: {
-      handler: function () {
-        localStorage.setItem('balans', JSON.stringify(this.userInfo.balans));
+      handler: function (newValue) {
+        localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
         this.allBusiness.forEach((item) => {
           if (this.userInfo.balans >= item.price) {
             item.isAvailablePurchase = true;
@@ -213,6 +233,17 @@ export default {
             item.isAvailablePurchase = false;
           }
         });
+
+        if (newValue.balans > 1000000 && !this.userInfo.congratulations) {
+          this.userInfo.congratulations = true;
+          this.becameMillionaire();
+        }
+      },
+      deep: true,
+    },
+    allBusiness: {
+      handler: function () {
+        localStorage.setItem('allBusiness', JSON.stringify(this.allBusiness));
       },
       deep: true,
     },
@@ -259,7 +290,7 @@ export default {
   &__main-content {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
   }
 
   &__top-content {
@@ -270,7 +301,7 @@ export default {
 
   &__statistics {
     margin: 0 auto;
-    width: 350px;
+    width: 400px;
     height: 80px;
     position: relative;
     background-color: rgba(255, 255, 255, 0.507);
@@ -291,6 +322,26 @@ export default {
       background-size: 60px 60px;
     }
   }
+
+  &__character-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  &__character-img {
+    width: 450px;
+    margin-bottom: -25px;
+    z-index: 3;
+  }
+
+  &__treasure-img {
+    width: 200px;
+    position: absolute;
+    bottom: 50px;
+    left: 20px;
+    z-index: 2;
+  }
 }
 
 .statistics__passiveIncome-bold,
@@ -301,5 +352,9 @@ export default {
 
 .balans-btn {
   @extend %baseButton;
+  bottom: 1px;
+  left: 1px;
+  margin-bottom: 10px;
+  z-index: 4;
 }
 </style>

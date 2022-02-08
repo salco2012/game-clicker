@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <play-space />
+    <PlaySpace />
   </div>
 </template>
 
