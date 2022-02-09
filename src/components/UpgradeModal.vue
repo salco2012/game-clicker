@@ -5,7 +5,17 @@
         class="modal__card card"
         v-for="upgrade in upgradeList"
         :key="upgrade.upgradeName"
-      ></div>
+      >
+        <h3 class="card__title">{{ upgrade.title }}</h3>
+        <p class="card__description">{{ upgrade.description }}</p>
+        <img
+          class="card__img"
+          :src="require(`../assets/img/couinClickIcon/${upgrade.Img}`)"
+          alt="coin"
+        />
+        <p class="card__price">Стоимость: {{ upgrade.priceUpgrade }} монет</p>
+        <button class="card__btn">Купить улучшение</button>
+      </div>
       <button class="modal__close">&#10006;</button>
     </div>
   </div>
@@ -17,58 +27,40 @@ export default {
     return {
       upgradeList: [
         {
-          upgradeName: 'Скорость Дохода',
-          upgradeDescription: 'Увеличивает скорость дохода на 0.1 сек.',
-          currentUpgradeLevel: 0,
-          maxUpgradeLevel: 10,
+          title: 'Скорость Дохода',
+          description: 'Cкорость дохода -0.2 сек.',
           priceUpgrade: 20000,
-          Img: '',
-          bgColor: 'tomato',
+          Img: 'time-icon.png',
         },
         {
-          upgradeName: 'Улучшение клика 1lvl',
-          upgradeDescription: '+ 5 монет к клику',
-          currentUpgradeLevel: 0,
-          maxUpgradeLevel: 10,
+          title: 'Улучшение клика 1lvl',
+          description: '+ 5 монет к клику',
           priceUpgrade: 50,
-          Img: '',
-          bgColor: 'blue',
+          Img: 'lvl-1.png',
         },
         {
-          upgradeName: 'Улучшение клика 2lvl',
-          upgradeDescription: '+ 25 монет к клику',
-          currentUpgradeLevel: 0,
-          maxUpgradeLevel: 10,
+          title: 'Улучшение клика 2lvl',
+          description: '+ 25 монет к клику',
           priceUpgrade: 5000,
-          Img: '',
-          bgColor: 'blue',
+          Img: 'lvl-3.png',
         },
         {
-          upgradeName: 'Улучшение клика 3lvl',
-          upgradeDescription: '+ 100 монет к клику',
-          currentUpgradeLevel: 0,
-          maxUpgradeLevel: 10,
+          title: 'Улучшение клика 3lvl',
+          description: '+ 100 монет к клику',
           priceUpgrade: 75000,
-          Img: '',
-          bgColor: 'blue',
+          Img: 'lvl-4.png',
         },
         {
-          upgradeName: 'Улучшение клика 4lvl',
-          upgradeDescription: '+ 500 монет к клику',
-          currentUpgradeLevel: 0,
-          maxUpgradeLevel: 10,
+          title: 'Улучшение клика 4lvl',
+          description: '+ 500 монет к клику',
           priceUpgrade: 500000,
-          Img: '',
-          bgColor: 'blue',
+          Img: 'lvl-5.png',
         },
         {
-          upgradeName: 'Улучшение клика 5lvl',
-          upgradeDescription: '+ 1000 монет к клику',
-          currentUpgradeLevel: 0,
-          maxUpgradeLevel: 10,
+          title: 'Улучшение клика 5lvl',
+          description: '+ 1000 монет к клику',
           priceUpgrade: 2000000,
-          Img: '',
-          bgColor: 'blue',
+          Img: 'lvl-6.png',
         },
       ],
     };
@@ -86,14 +78,6 @@ export default {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  &__card {
-    border: 2px solid black;
-    height: 350px;
-    width: 250px;
-    border-radius: 15px;
-    box-shadow: 5px 7px 15px black;
-    margin: 15px 0 25px 0;
-  }
   &__close {
     cursor: pointer;
     border: none;
@@ -103,6 +87,53 @@ export default {
     position: absolute;
     top: 5px;
     right: 5px;
+  }
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+  text-align: center;
+  border: 2px solid black;
+  height: 320px;
+  width: 250px;
+  border-radius: 15px;
+  box-shadow: 5px 7px 15px black;
+  margin: 15px 0 25px 0;
+  background-color: #0d151c;
+  color: white;
+  padding-bottom: 20px;
+
+  &__title {
+    color: $color_2;
+  }
+
+  &__description {
+    color: $color_1;
+  }
+
+  &__price {
+    margin-bottom: 10px;
+  }
+
+  &__img {
+    width: 120px;
+  }
+
+  &__btn {
+    @extend %baseButton;
+    background-color: $color_2;
+    box-shadow: 0 10px 0 $color_3, 0 5px 20px;
+    &:hover {
+      top: 2px;
+      box-shadow: 0 8px 0 $color_3, 0 5px 20px;
+    }
+    &:active {
+      box-shadow: none;
+      top: 10px;
+    }
   }
 }
 
