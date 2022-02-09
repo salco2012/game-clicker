@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" v-if="windowUpgradeIsActive">
     <div class="modal">
       <div
         class="modal__card card"
@@ -16,7 +16,7 @@
         <p class="card__price">Стоимость: {{ upgrade.priceUpgrade }} монет</p>
         <button class="card__btn">Купить улучшение</button>
       </div>
-      <button class="modal__close">&#10006;</button>
+      <button class="modal__close" @click="$emit('close-upgrade')">&#10006;</button>
     </div>
   </div>
 </template>
@@ -64,6 +64,12 @@ export default {
         },
       ],
     };
+  },
+  props: {
+    windowUpgradeIsActive: {
+      type: Boolean,
+      default: false,
+    },
   },
 };
 </script>

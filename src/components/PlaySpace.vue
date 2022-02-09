@@ -49,7 +49,7 @@
           Заработать
           <i class="fas fa-coins"></i>
         </button>
-        <button class="upgrade-click">
+        <button class="upgrade-click" @click="upgradeMenu">
           Улучшения
           <i class="fas fa-bolt"></i>
         </button>
@@ -70,7 +70,10 @@
       loop="true"
       ref="backgroundMelody"
     ></audio>
-    <UpgradeModal />
+    <UpgradeModal
+      :windowUpgradeIsActive="windowUpgradeIsActive"
+      @close-upgrade="closeUpgrade"
+    />
   </div>
 </template>
 
@@ -100,6 +103,7 @@ export default {
         isDisplayCharacter: false,
         congratulations: false, // Флаг отвечающий за поздравление игрока со статусом миллионера
       },
+      windowUpgradeIsActive: false,
       allBusiness: [
         {
           img: 'flea-market.jpg',
@@ -262,6 +266,12 @@ export default {
     soundBuy() {
       const audioBuy = new Audio(soundBuy);
       audioBuy.play();
+    },
+    upgradeMenu() {
+      this.windowUpgradeIsActive = true;
+    },
+    closeUpgrade() {
+      this.windowUpgradeIsActive = false;
     },
     byuBusiness({ price, income, title }) {
       this.userInfo.balans -= price; // Уменьшаем баланс
