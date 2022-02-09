@@ -9,7 +9,7 @@
         class="income-factor__reset-progress"
         :disabled="!multiplierAllowed"
         :title="`Необходимо накопить: ${priceReset} монет `"
-        @click="isHideModal = false"
+        @click="increaseMultiplier"
       >
         Увеличить множитель
       </button>
@@ -21,12 +21,15 @@
         $emit('reset-progress');
         isHideModal = true;
       "
+      @no-reset-progress="noReset"
     />
   </div>
 </template>
 
 <script>
 import IncomeFactorModal from './IncomeFactorModal.vue';
+import soundClosePopup from '../assets/audio/closePopup.mp3';
+import soundClick from '../assets/audio/click-btn.mp3';
 
 export default {
   components: {
@@ -46,8 +49,21 @@ export default {
     },
   },
   methods: {
+    addAudioPlay(nameAudio) {
+      const audio = new Audio(nameAudio);
+      audio.play();
+    },
+    increaseMultiplier() {
+      this.isHideModal = false;
+      this.addAudioPlay(soundClick);
+    },
+    noReset() {
+      this.isHideModal = true;
+      this.addAudioPlay(soundClick);
+    },
     closeModal() {
       this.isHideModal = true;
+      this.addAudioPlay(soundClosePopup);
     },
   },
   computed: {
@@ -68,7 +84,7 @@ export default {
   font-weight: bold;
   margin-right: 50px;
   margin-top: -10px;
-  &__wrapper{
+  &__wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;

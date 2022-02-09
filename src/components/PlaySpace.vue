@@ -64,7 +64,6 @@
         />
       </div>
     </div>
-    <audio src="../assets/audio/click-btn.mp3" ref="audiocoin"></audio>
     <audio
       src="../assets/audio/background-melody.mp3"
       loop="true"
@@ -73,6 +72,7 @@
     <UpgradeModal
       :windowUpgradeIsActive="windowUpgradeIsActive"
       @close-upgrade="closeUpgrade"
+      @buy-upgrade="buyUpgrade"
     />
   </div>
 </template>
@@ -84,6 +84,10 @@ import IncomeFactor from '../components/IncomeFactor.vue';
 import UpgradeModal from '../components/UpgradeModal.vue';
 import soundBuy from '../assets/audio/buy.mp3';
 import soundMillionDollars from '../assets/audio/million-dollarov-ssha.mp3';
+import soundClick from '../assets/audio/click-btn.mp3';
+import soundAddMoneyClick from '../assets/audio/addMoneyClick.mp3';
+import soundPopup from '../assets/audio/popup.mp3';
+import soundClosePopup from '../assets/audio/closePopup.mp3';
 
 export default {
   components: {
@@ -172,10 +176,13 @@ export default {
       ],
     };
   },
+  updated() {
+    console.log(this.incomeInterval);
+  },
   methods: {
     addMoney() {
       this.userInfo.balans += this.userInfo.clickIncome * this.userInfo.factor;
-      this.soundClick();
+      this.addAudioPlay(soundAddMoneyClick);
     },
     resetProgress() {
       this.userInfo.balans = 0;
@@ -184,6 +191,8 @@ export default {
       this.userInfo.passiveIncome = 1;
       this.userInfo.clickIncome = 1;
       this.userInfo.incomeInterval = 1;
+
+      this.addAudioPlay(soundClick);
 
       // Перезаписал данные которые были при инициализации. Так как при удалении из localStorage данные реактивно не обновятся. Доп. вариант переписать все на VueX, возможно потом переделаю.
       this.allBusiness = [
@@ -253,9 +262,6 @@ export default {
         },
       ];
     },
-    soundClick() {
-      this.$refs.audiocoin.play();
-    },
     ringtoneStatus(event) {
       if (event === true) {
         this.$refs.backgroundMelody.play();
@@ -263,15 +269,30 @@ export default {
         this.$refs.backgroundMelody.pause();
       }
     },
-    soundBuy() {
-      const audioBuy = new Audio(soundBuy);
-      audioBuy.play();
-    },
     upgradeMenu() {
       this.windowUpgradeIsActive = true;
+      this.addAudioPlay(soundPopup);
+    },
+    addAudioPlay(nameAudio) {
+      const audio = new Audio(nameAudio);
+      audio.play();
     },
     closeUpgrade() {
       this.windowUpgradeIsActive = false;
+
+      this.addAudioPlay(soundClosePopup);
+    },
+    buyUpgrade({ priceUpgrade, increaseInClick, intervalReduction }) {
+      this.addAudioPlay(soundClick);
+      if (increaseInClick) {
+        this.userInfo.balans -= priceUpgrade;
+        this.userInfo.clickIncome += increaseInClick;
+      }
+      const minAllowedInterval = this.userInfo.incomeInterval * 1000 > 100;
+      if (intervalReduction && minAllowedInterval) {
+        this.userInfo.balans -= priceUpgrade;
+        this.userInfo.incomeInterval -= intervalReduction;
+      }
     },
     byuBusiness({ price, income, title }) {
       this.userInfo.balans -= price; // Уменьшаем баланс
@@ -286,12 +307,11 @@ export default {
         }
       });
 
-      this.soundBuy(); // Проигрываем мелодию при покупке
+      this.addAudioPlay(soundBuy);
     },
     becameMillionaire() {
       this.userInfo.isDisplayCharacter = true;
-      const audio = new Audio(soundMillionDollars);
-      audio.play();
+      this.addAudioPlay(soundMillionDollars);
     },
   },
   computed: {
@@ -302,15 +322,18 @@ export default {
       // Высчитываем доход от клика с учетом множителя
       return this.userInfo.clickIncome * this.userInfo.factor;
     },
+    incomeInterval() {
+      return this.userInfo.incomeInterval * 1000;
+    },
   },
   created() {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-    if (userInfo) {
+    if (userInfo !== null) {
       this.userInfo = userInfo;
     }
 
     const allBusiness = JSON.parse(localStorage.getItem('allBusiness'));
-    if (allBusiness.length >= 1) {
+    if (allBusiness !== null) {
       this.allBusiness = allBusiness;
     }
   },
@@ -318,7 +341,7 @@ export default {
     setInterval(() => {
       this.userInfo.balans +=
         this.userInfo.passiveIncome * this.userInfo.factor;
-    }, 1000);
+    }, this.userInfo.incomeInterval * 1000);
   },
   watch: {
     userInfo: {

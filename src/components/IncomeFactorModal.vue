@@ -16,7 +16,7 @@
         >
           Да
         </button>
-        <button class="buttons-wrapper__btn-no" @click="$emit('close-modal')">
+        <button class="buttons-wrapper__btn-no" @click="$emit('no-reset-progress')">
           Нет
         </button>
       </div>

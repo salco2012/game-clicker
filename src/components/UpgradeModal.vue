@@ -14,9 +14,13 @@
           alt="coin"
         />
         <p class="card__price">Стоимость: {{ upgrade.priceUpgrade }} монет</p>
-        <button class="card__btn">Купить улучшение</button>
+        <button class="card__btn" @click="$emit('buy-upgrade', upgrade)">
+          Купить улучшение
+        </button>
       </div>
-      <button class="modal__close" @click="$emit('close-upgrade')">&#10006;</button>
+      <button class="modal__close" @click="$emit('close-upgrade')">
+        &#10006;
+      </button>
     </div>
   </div>
 </template>
@@ -28,37 +32,43 @@ export default {
       upgradeList: [
         {
           title: 'Скорость Дохода',
-          description: 'Cкорость дохода -0.2 сек.',
+          description: 'Cкорость дохода -0.1 сек.',
           priceUpgrade: 20000,
+          intervalReduction: 0.1,
           Img: 'time-icon.png',
         },
         {
           title: 'Улучшение клика 1lvl',
           description: '+ 5 монет к клику',
+          increaseInClick: 5,
           priceUpgrade: 50,
           Img: 'lvl-1.png',
         },
         {
           title: 'Улучшение клика 2lvl',
           description: '+ 25 монет к клику',
+          increaseInClick: 25,
           priceUpgrade: 5000,
           Img: 'lvl-3.png',
         },
         {
           title: 'Улучшение клика 3lvl',
           description: '+ 100 монет к клику',
+          increaseInClick: 100,
           priceUpgrade: 75000,
           Img: 'lvl-4.png',
         },
         {
           title: 'Улучшение клика 4lvl',
           description: '+ 500 монет к клику',
+          increaseInClick: 500,
           priceUpgrade: 500000,
           Img: 'lvl-5.png',
         },
         {
           title: 'Улучшение клика 5lvl',
           description: '+ 1000 монет к клику',
+          increaseInClick: 1000,
           priceUpgrade: 2000000,
           Img: 'lvl-6.png',
         },
@@ -111,6 +121,10 @@ export default {
   background-color: #0d151c;
   color: white;
   padding-bottom: 20px;
+  transition: .5s ease-in;
+  &:hover {
+    transform: scale(1.05);
+  }
 
   &__title {
     color: $color_2;
