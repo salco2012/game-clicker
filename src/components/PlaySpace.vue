@@ -5,6 +5,7 @@
       <IncomeFactor
         :factor="userInfo.factor"
         :balans="userInfo.balans"
+        :multiplierСost="multiplierСost"
         @reset-progress="resetProgress"
       />
       <SwitchRadio class="play-space__switch" @change="ringtoneStatus" />
@@ -20,6 +21,12 @@
         />
       </div>
       <div class="play-space__statistics statistics">
+        <p class="statistics__incomeInterval">
+          Интервал дохода:
+          <span class="statistics__incomeInterval-bold"
+            >{{ userInfo.incomeInterval }} секунда</span
+          >
+        </p>
         <p class="statistics__passiveIncome">
           Пассивный доход:
           <span class="statistics__passiveIncome-bold"
@@ -71,6 +78,7 @@
     ></audio>
     <UpgradeModal
       :windowUpgradeIsActive="windowUpgradeIsActive"
+      :balans="userInfo.balans"
       @close-upgrade="closeUpgrade"
       @buy-upgrade="buyUpgrade"
     />
@@ -108,6 +116,7 @@ export default {
         congratulations: false, // Флаг отвечающий за поздравление игрока со статусом миллионера
       },
       windowUpgradeIsActive: false,
+      multiplierСost: 1000, // Стоимость покупки множителя
       allBusiness: [
         {
           img: 'flea-market.jpg',
@@ -177,7 +186,7 @@ export default {
     };
   },
   updated() {
-    console.log(this.incomeInterval);
+    console.log('Текущий интервал:', this.incomeInterval);
   },
   methods: {
     addMoney() {
@@ -191,6 +200,8 @@ export default {
       this.userInfo.passiveIncome = 1;
       this.userInfo.clickIncome = 1;
       this.userInfo.incomeInterval = 1;
+
+      this.multiplierСost *= 4;
 
       this.addAudioPlay(soundClick);
 
@@ -282,16 +293,27 @@ export default {
 
       this.addAudioPlay(soundClosePopup);
     },
+    balansInterval() {
+      setInterval(() => {
+        this.userInfo.balans +=
+          this.userInfo.passiveIncome * this.userInfo.factor;
+      }, this.incomeInterval);
+    },
     buyUpgrade({ priceUpgrade, increaseInClick, intervalReduction }) {
       this.addAudioPlay(soundClick);
       if (increaseInClick) {
-        this.userInfo.balans -= priceUpgrade;
-        this.userInfo.clickIncome += increaseInClick;
+        if (this.userInfo.balans >= priceUpgrade) {
+          this.userInfo.balans -= priceUpgrade;
+          this.userInfo.clickIncome += increaseInClick;
+        }
       }
       const minAllowedInterval = this.userInfo.incomeInterval * 1000 > 100;
       if (intervalReduction && minAllowedInterval) {
-        this.userInfo.balans -= priceUpgrade;
-        this.userInfo.incomeInterval -= intervalReduction;
+        if (this.userInfo.balans >= priceUpgrade) {
+          this.userInfo.balans -= priceUpgrade;
+          this.userInfo.incomeInterval = +(this.userInfo.incomeInterval -=
+            intervalReduction).toFixed(1);
+        }
       }
     },
     byuBusiness({ price, income, title }) {
@@ -315,6 +337,9 @@ export default {
     },
   },
   computed: {
+    currentInterval() {
+      return this.userInfo.incomeInterval;
+    },
     currentBalans() {
       return Math.floor(this.userInfo.balans);
     },
@@ -336,12 +361,11 @@ export default {
     if (allBusiness !== null) {
       this.allBusiness = allBusiness;
     }
-  },
-  mounted() {
-    setInterval(() => {
-      this.userInfo.balans +=
-        this.userInfo.passiveIncome * this.userInfo.factor;
-    }, this.userInfo.incomeInterval * 1000);
+
+    const multiplierСost = JSON.parse(localStorage.getItem('multiplierСost'));
+    if (multiplierСost !== null) {
+      this.multiplierСost = multiplierСost;
+    }
   },
   watch: {
     userInfo: {
@@ -355,12 +379,18 @@ export default {
           }
         });
 
-        if (newValue.balans > 1000000 && !this.userInfo.congratulations) {
+        if (newValue.balans > 1e6 && !this.userInfo.congratulations) {
           this.userInfo.congratulations = true;
           this.becameMillionaire();
         }
       },
       deep: true,
+    },
+    currentInterval() {
+      this.balansInterval();
+    },
+    multiplierСost() {
+      localStorage.setItem('multiplierСost', JSON.parse(this.multiplierСost));
     },
     allBusiness: {
       handler: function () {
@@ -463,12 +493,14 @@ export default {
   &__treasure-img {
     width: 200px;
     position: absolute;
-    bottom: 50px;
+    bottom: 120px;
     left: 20px;
     z-index: 2;
   }
 }
+
 .statistics__passiveIncome-bold,
+.statistics__incomeInterval-bold,
 .statistics__clickIncome-bold {
   font-weight: bold;
 }

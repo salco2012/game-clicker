@@ -47,6 +47,9 @@ export default {
     balans: {
       type: Number,
     },
+    multiplierСost: {
+      type: Number,
+    },
   },
   methods: {
     addAudioPlay(nameAudio) {
@@ -67,11 +70,11 @@ export default {
     },
   },
   computed: {
-    priceReset() {
-      return 100000 * this.factor;
-    },
     multiplierAllowed() {
       return this.balans >= this.priceReset;
+    },
+    priceReset() {
+      return this.multiplierСost;
     },
   },
 };

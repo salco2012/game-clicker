@@ -14,7 +14,11 @@
           alt="coin"
         />
         <p class="card__price">Стоимость: {{ upgrade.priceUpgrade }} монет</p>
-        <button class="card__btn" @click="$emit('buy-upgrade', upgrade)">
+        <button
+          class="card__btn"
+          @click="$emit('buy-upgrade', upgrade)"
+          :disabled="isDisabledBuyUpgrade(upgrade)"
+        >
           Купить улучшение
         </button>
       </div>
@@ -75,10 +79,21 @@ export default {
       ],
     };
   },
+  methods: {
+    isDisabledBuyUpgrade({ priceUpgrade }) {
+      if (this.balans >= priceUpgrade) {
+        return false;
+      }
+      return true;
+    },
+  },
   props: {
     windowUpgradeIsActive: {
       type: Boolean,
       default: false,
+    },
+    balans: {
+      type: Number,
     },
   },
 };
@@ -121,7 +136,7 @@ export default {
   background-color: #0d151c;
   color: white;
   padding-bottom: 20px;
-  transition: .5s ease-in;
+  transition: 0.5s ease-in;
   &:hover {
     transform: scale(1.05);
   }
@@ -153,6 +168,12 @@ export default {
     &:active {
       box-shadow: none;
       top: 10px;
+    }
+    &:disabled {
+      background-color: #ccc;
+      color: grey;
+      box-shadow: 0 10px 0 rgb(138, 138, 138), 0 5px 5px;
+      cursor: not-allowed;
     }
   }
 }
