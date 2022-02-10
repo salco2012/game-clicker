@@ -7,6 +7,9 @@
         :key="upgrade.upgradeName"
       >
         <h3 class="card__title">{{ upgrade.title }}</h3>
+        <p class="card__level">
+          Уровень: {{ upgrade.currentLevel }}/{{ upgrade.maxLevel }}
+        </p>
         <p class="card__description">{{ upgrade.description }}</p>
         <img
           class="card__img"
@@ -40,6 +43,8 @@ export default {
           priceUpgrade: 20000,
           intervalReduction: 0.1,
           Img: 'time-icon.png',
+          currentLevel: 0,
+          maxLevel: 9,
         },
         {
           title: 'Улучшение клика 1lvl',
@@ -47,6 +52,8 @@ export default {
           increaseInClick: 5,
           priceUpgrade: 50,
           Img: 'lvl-1.png',
+          currentLevel: 0,
+          maxLevel: 10,
         },
         {
           title: 'Улучшение клика 2lvl',
@@ -54,6 +61,8 @@ export default {
           increaseInClick: 25,
           priceUpgrade: 5000,
           Img: 'lvl-3.png',
+          currentLevel: 0,
+          maxLevel: 10,
         },
         {
           title: 'Улучшение клика 3lvl',
@@ -61,6 +70,8 @@ export default {
           increaseInClick: 100,
           priceUpgrade: 75000,
           Img: 'lvl-4.png',
+          currentLevel: 0,
+          maxLevel: 10,
         },
         {
           title: 'Улучшение клика 4lvl',
@@ -68,6 +79,8 @@ export default {
           increaseInClick: 500,
           priceUpgrade: 500000,
           Img: 'lvl-5.png',
+          currentLevel: 0,
+          maxLevel: 10,
         },
         {
           title: 'Улучшение клика 5lvl',
@@ -75,16 +88,97 @@ export default {
           increaseInClick: 1000,
           priceUpgrade: 2000000,
           Img: 'lvl-6.png',
+          currentLevel: 0,
+          maxLevel: 10,
         },
       ],
     };
   },
   methods: {
-    isDisabledBuyUpgrade({ priceUpgrade }) {
-      if (this.balans >= priceUpgrade) {
+    isDisabledBuyUpgrade({ priceUpgrade, currentLevel, maxLevel }) {
+      if (this.balans >= priceUpgrade && currentLevel < maxLevel) {
         return false;
       }
       return true;
+    },
+    dataCardСhange(titleCard) {
+      const currentCard = this.upgradeList.find(
+        (card) => card.title === titleCard
+      );
+      currentCard.currentLevel += 1;
+      currentCard.priceUpgrade *= 4;
+    },
+    resetCardProgress() {
+      this.upgradeList = [
+        {
+          title: 'Скорость Дохода',
+          description: 'Cкорость дохода -0.1 сек.',
+          priceUpgrade: 20000,
+          intervalReduction: 0.1,
+          Img: 'time-icon.png',
+          currentLevel: 0,
+          maxLevel: 9,
+        },
+        {
+          title: 'Улучшение клика 1lvl',
+          description: '+ 5 монет к клику',
+          increaseInClick: 5,
+          priceUpgrade: 50,
+          Img: 'lvl-1.png',
+          currentLevel: 0,
+          maxLevel: 10,
+        },
+        {
+          title: 'Улучшение клика 2lvl',
+          description: '+ 25 монет к клику',
+          increaseInClick: 25,
+          priceUpgrade: 5000,
+          Img: 'lvl-3.png',
+          currentLevel: 0,
+          maxLevel: 10,
+        },
+        {
+          title: 'Улучшение клика 3lvl',
+          description: '+ 100 монет к клику',
+          increaseInClick: 100,
+          priceUpgrade: 75000,
+          Img: 'lvl-4.png',
+          currentLevel: 0,
+          maxLevel: 10,
+        },
+        {
+          title: 'Улучшение клика 4lvl',
+          description: '+ 500 монет к клику',
+          increaseInClick: 500,
+          priceUpgrade: 500000,
+          Img: 'lvl-5.png',
+          currentLevel: 0,
+          maxLevel: 10,
+        },
+        {
+          title: 'Улучшение клика 5lvl',
+          description: '+ 1000 монет к клику',
+          increaseInClick: 1000,
+          priceUpgrade: 2000000,
+          Img: 'lvl-6.png',
+          currentLevel: 0,
+          maxLevel: 10,
+        },
+      ];
+    },
+  },
+  created() {
+    const upgradeList = JSON.parse(localStorage.getItem('upgradeList'));
+    if (upgradeList !== null) {
+      this.upgradeList = upgradeList;
+    }
+  },
+  watch: {
+    upgradeList: {
+      handler: function () {
+        localStorage.setItem('upgradeList', JSON.stringify(this.upgradeList));
+      },
+      deep: true,
     },
   },
   props: {
@@ -143,6 +237,7 @@ export default {
 
   &__title {
     color: $color_2;
+    margin-bottom: 0;
   }
 
   &__description {

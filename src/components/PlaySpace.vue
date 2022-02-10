@@ -77,6 +77,7 @@
       ref="backgroundMelody"
     ></audio>
     <UpgradeModal
+      ref="UpgradeModal"
       :windowUpgradeIsActive="windowUpgradeIsActive"
       :balans="userInfo.balans"
       @close-upgrade="closeUpgrade"
@@ -110,7 +111,7 @@ export default {
         balans: 0,
         passiveIncome: 1,
         factor: 1,
-        clickIncome: 1,
+        clickIncome: 51515525150000,
         incomeInterval: 1,
         isDisplayCharacter: false,
         congratulations: false, // Флаг отвечающий за поздравление игрока со статусом миллионера
@@ -205,6 +206,8 @@ export default {
 
       this.addAudioPlay(soundClick);
 
+      this.$refs.UpgradeModal.resetCardProgress();
+
       // Перезаписал данные которые были при инициализации. Так как при удалении из localStorage данные реактивно не обновятся. Доп. вариант переписать все на VueX, возможно потом переделаю.
       this.allBusiness = [
         {
@@ -293,16 +296,17 @@ export default {
 
       this.addAudioPlay(soundClosePopup);
     },
-    balansInterval() {
-      setInterval(() => {
-        this.userInfo.balans +=
-          this.userInfo.passiveIncome * this.userInfo.factor;
-      }, this.incomeInterval);
-    },
-    buyUpgrade({ priceUpgrade, increaseInClick, intervalReduction }) {
+    // balansInterval() {
+    //   setInterval(() => {
+    //     this.userInfo.balans +=
+    //       this.userInfo.passiveIncome * this.userInfo.factor;
+    //   }, this.incomeInterval);
+    // },
+    buyUpgrade({ title, priceUpgrade, increaseInClick, intervalReduction }) {
       this.addAudioPlay(soundClick);
       if (increaseInClick) {
         if (this.userInfo.balans >= priceUpgrade) {
+          this.$refs.UpgradeModal.dataCardСhange(title);
           this.userInfo.balans -= priceUpgrade;
           this.userInfo.clickIncome += increaseInClick;
         }
@@ -310,6 +314,7 @@ export default {
       const minAllowedInterval = this.userInfo.incomeInterval * 1000 > 100;
       if (intervalReduction && minAllowedInterval) {
         if (this.userInfo.balans >= priceUpgrade) {
+          this.$refs.UpgradeModal.dataCardСhange(title);
           this.userInfo.balans -= priceUpgrade;
           this.userInfo.incomeInterval = +(this.userInfo.incomeInterval -=
             intervalReduction).toFixed(1);
@@ -385,9 +390,6 @@ export default {
         }
       },
       deep: true,
-    },
-    currentInterval() {
-      this.balansInterval();
     },
     multiplierСost() {
       localStorage.setItem('multiplierСost', JSON.parse(this.multiplierСost));
