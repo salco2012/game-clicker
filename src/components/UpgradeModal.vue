@@ -39,8 +39,8 @@ export default {
       upgradeList: [
         {
           title: 'Скорость Дохода',
-          description: 'Cкорость дохода -0.1 сек.',
-          priceUpgrade: 20000,
+          description: 'Cкорость дохода -0.2 сек.',
+          priceUpgrade: 500,
           intervalReduction: 0.1,
           Img: 'time-icon.png',
           currentLevel: 0,
@@ -106,14 +106,14 @@ export default {
         (card) => card.title === titleCard
       );
       currentCard.currentLevel += 1;
-      currentCard.priceUpgrade *= 4;
+      currentCard.priceUpgrade *= 3;
     },
     resetCardProgress() {
       this.upgradeList = [
         {
           title: 'Скорость Дохода',
-          description: 'Cкорость дохода -0.1 сек.',
-          priceUpgrade: 20000,
+          description: 'Cкорость дохода -0.2 сек.',
+          priceUpgrade: 500,
           intervalReduction: 0.1,
           Img: 'time-icon.png',
           currentLevel: 0,

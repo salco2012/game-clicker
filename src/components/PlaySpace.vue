@@ -111,8 +111,9 @@ export default {
         balans: 0,
         passiveIncome: 1,
         factor: 1,
-        clickIncome: 51515525150000,
+        clickIncome: 1,
         incomeInterval: 1,
+        interval: null,
         isDisplayCharacter: false,
         congratulations: false, // Флаг отвечающий за поздравление игрока со статусом миллионера
       },
@@ -185,9 +186,6 @@ export default {
         },
       ],
     };
-  },
-  updated() {
-    console.log('Текущий интервал:', this.incomeInterval);
   },
   methods: {
     addMoney() {
@@ -296,12 +294,6 @@ export default {
 
       this.addAudioPlay(soundClosePopup);
     },
-    // balansInterval() {
-    //   setInterval(() => {
-    //     this.userInfo.balans +=
-    //       this.userInfo.passiveIncome * this.userInfo.factor;
-    //   }, this.incomeInterval);
-    // },
     buyUpgrade({ title, priceUpgrade, increaseInClick, intervalReduction }) {
       this.addAudioPlay(soundClick);
       if (increaseInClick) {
@@ -329,7 +321,7 @@ export default {
       this.allBusiness.filter((item) => {
         if (item.title === title) {
           item.bought += 1;
-          item.price += Math.floor((item.price / 100) * 75);
+          item.price *= 2;
           item.totalIncomePoint = item.bought ? item.income * item.bought : 0;
         }
       });
@@ -339,6 +331,12 @@ export default {
     becameMillionaire() {
       this.userInfo.isDisplayCharacter = true;
       this.addAudioPlay(soundMillionDollars);
+    },
+    startInterval() {
+      this.userInfo.interval = setInterval(() => {
+        this.userInfo.balans +=
+          this.userInfo.passiveIncome * this.userInfo.factor;
+      }, this.incomeInterval);
     },
   },
   computed: {
@@ -372,7 +370,14 @@ export default {
       this.multiplierСost = multiplierСost;
     }
   },
+  mounted() {
+    this.startInterval();
+  },
   watch: {
+    incomeInterval() {
+      clearInterval(this.userInfo.interval);
+      this.startInterval();
+    },
     userInfo: {
       handler: function (newValue) {
         localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
