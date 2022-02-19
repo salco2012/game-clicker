@@ -39,7 +39,7 @@ export default {
       upgradeList: [
         {
           title: 'Скорость Дохода',
-          description: 'Cкорость дохода -0.2 сек.',
+          description: 'Cкорость дохода -0.1 сек.',
           priceUpgrade: 500,
           intervalReduction: 0.1,
           Img: 'time-icon.png',
@@ -112,7 +112,7 @@ export default {
       this.upgradeList = [
         {
           title: 'Скорость Дохода',
-          description: 'Cкорость дохода -0.2 сек.',
+          description: 'Cкорость дохода -0.1 сек.',
           priceUpgrade: 500,
           intervalReduction: 0.1,
           Img: 'time-icon.png',
