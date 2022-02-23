@@ -11,7 +11,7 @@
       <SwitchRadio class="play-space__switch" @change="ringtoneStatus" />
     </div>
     <div class="play-space__main-content">
-      <div>
+      <div class="play-space__left-cards">
         <BusinessPassiveIncome
           v-for="business in allBusiness.slice(0, 4)"
           :key="business.title"
@@ -20,27 +20,27 @@
           @byu-business="byuBusiness"
         />
       </div>
-      <div class="play-space__statistics statistics">
-        <p class="statistics__incomeInterval">
-          Интервал дохода:
-          <span class="statistics__incomeInterval-bold"
-            >{{ userInfo.incomeInterval }} секунда</span
-          >
-        </p>
-        <p class="statistics__passiveIncome">
-          Пассивный доход:
-          <span class="statistics__passiveIncome-bold"
-            >{{ userInfo.passiveIncome * userInfo.factor }} монет</span
-          >
-        </p>
-        <p class="statistics__clickIncome">
-          Доход при клике:
-          <span class="statistics__clickIncome-bold"
-            >{{ clickRevenue }} монет</span
-          >
-        </p>
-      </div>
       <div class="play-space__character-wrapper">
+        <div class="play-space__statistics statistics">
+          <p class="statistics__incomeInterval">
+            Интервал дохода:
+            <span class="statistics__incomeInterval-bold"
+              >{{ userInfo.incomeInterval }} секунда</span
+            >
+          </p>
+          <p class="statistics__passiveIncome">
+            Пассивный доход:
+            <span class="statistics__passiveIncome-bold"
+              >{{ userInfo.passiveIncome * userInfo.factor }} монет</span
+            >
+          </p>
+          <p class="statistics__clickIncome">
+            Доход при клике:
+            <span class="statistics__clickIncome-bold"
+              >{{ clickRevenue }} монет</span
+            >
+          </p>
+        </div>
         <img
           class="play-space__character-img"
           src="../assets/img/character.png"
@@ -61,7 +61,7 @@
           <i class="fas fa-bolt"></i>
         </button>
       </div>
-      <div>
+      <div class="play-space__right-cards">
         <BusinessPassiveIncome
           v-for="business in allBusiness.slice(4, 8)"
           :key="business.title"
@@ -206,6 +206,8 @@ export default {
 
       this.$refs.UpgradeModal.resetCardProgress();
 
+      this.isAvailableBodyScroll();
+
       // Перезаписал данные которые были при инициализации. Так как при удалении из localStorage данные реактивно не обновятся. Доп. вариант переписать все на VueX, возможно потом переделаю.
       this.allBusiness = [
         {
@@ -284,6 +286,7 @@ export default {
     upgradeMenu() {
       this.windowUpgradeIsActive = true;
       this.addAudioPlay(soundPopup);
+      this.IsHiddenBodyScroll();
     },
     addAudioPlay(nameAudio) {
       const audio = new Audio(nameAudio);
@@ -293,6 +296,8 @@ export default {
       this.windowUpgradeIsActive = false;
 
       this.addAudioPlay(soundClosePopup);
+
+      this.isAvailableBodyScroll();
     },
     buyUpgrade({ title, priceUpgrade, increaseInClick, intervalReduction }) {
       this.addAudioPlay(soundClick);
@@ -337,6 +342,14 @@ export default {
         this.userInfo.balans +=
           this.userInfo.passiveIncome * this.userInfo.factor;
       }, this.incomeInterval);
+    },
+    IsHiddenBodyScroll() {
+      const body = document.querySelector('body');
+      body.style.overflow = 'hidden';
+    },
+    isAvailableBodyScroll() {
+      const body = document.querySelector('body');
+      body.style.overflow = 'visible';
     },
   },
   computed: {
@@ -460,7 +473,7 @@ export default {
   }
 
   &__statistics {
-    top: 40px;
+    top: -50px;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 400px;
@@ -531,6 +544,94 @@ export default {
   &:active {
     box-shadow: none;
     top: 10px;
+  }
+}
+
+// Adaptive
+/* lg-размер (<=1199px) */
+@media screen and (max-width: 1700px) {
+  /* CSS для ширины от 1200px до 1700px */
+  .play-space {
+    &__main-content {
+      flex-direction: column;
+      align-items: center;
+    }
+    &__character-wrapper {
+      order: -1;
+      margin: 120px 0 40px 0;
+    }
+    &__left-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    &__right-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 1199px) {
+  /* CSS для ширины от 992px до 1199px */
+}
+
+/* md-размер (<=991px) */
+@media screen and (max-width: 991px) {
+  /* CSS для ширины от 768px до 991px */
+  .play-space {
+    &__balans {
+      margin: 0;
+    }
+    &__top-content {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+  }
+
+  .income-factor {
+    margin: 0;
+  }
+}
+
+/* sm-размер (<=768px) */
+@media screen and (max-width: 767px) {
+  /* CSS для ширины от 576px до 767px */
+}
+
+/* xs-размер (<=575px) */
+@media screen and (max-width: 575px) {
+  /* CSS для ширины jn 320 до 575px (включительно) */
+  .play-space {
+    &__balans {
+      width: 280px;
+      font-size: 22px;
+      &::before {
+        width: 40px;
+        height: 40px;
+        background-size: 40px 40px;
+        top: 2px;
+        left: -5px;
+      }
+    }
+    &__character-img {
+      width: 300px;
+      margin-bottom: -10px;
+    }
+    &__treasure-img {
+      width: 120px;
+    }
+  }
+
+  .statistics {
+    width: 260px;
+    &::before {
+      display: none;
+    }
   }
 }
 </style>

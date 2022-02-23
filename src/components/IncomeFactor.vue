@@ -59,14 +59,25 @@ export default {
     increaseMultiplier() {
       this.isHideModal = false;
       this.addAudioPlay(soundClick);
+      this.IsHiddenBodyScroll();
     },
     noReset() {
       this.isHideModal = true;
       this.addAudioPlay(soundClick);
+      this.isAvailableBodyScroll();
     },
     closeModal() {
       this.isHideModal = true;
       this.addAudioPlay(soundClosePopup);
+      this.isAvailableBodyScroll();
+    },
+    IsHiddenBodyScroll() {
+      const body = document.querySelector('body');
+      body.style.overflow = 'hidden';
+    },
+    isAvailableBodyScroll() {
+      const body = document.querySelector('body');
+      body.style.overflow = 'visible';
     },
   },
   computed: {
@@ -110,6 +121,20 @@ export default {
     padding: 10px 20px;
     height: 40px;
     border-radius: 20px;
+  }
+}
+
+// media
+/* md-размер (<=991px) */
+@media screen and (max-width: 991px) {
+  /* CSS для ширины от 768px до 991px */
+  .income-factor {
+    &__description {
+      margin: 10px 0 5px 0;
+    }
+    &__reset-progress {
+      margin-bottom: 20px;
+    }
   }
 }
 </style>

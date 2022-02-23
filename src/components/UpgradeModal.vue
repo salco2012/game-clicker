@@ -223,10 +223,10 @@ export default {
   text-align: center;
   border: 2px solid black;
   height: 320px;
-  width: 250px;
+  width: 280px;
   border-radius: 15px;
   box-shadow: 5px 7px 15px black;
-  margin: 15px 0 25px 0;
+  margin: 0 15px 15px 0;
   background-color: #0d151c;
   color: white;
   padding-bottom: 20px;
@@ -284,5 +284,67 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+// Adaptive
+
+@media screen and (max-width: 1700px) {
+  /* CSS для ширины от 1200px до 1700px */
+}
+
+@media screen and (max-width: 1199px) {
+  /* CSS для ширины от 992px до 1199px */
+}
+
+/* md-размер (<=991px) */
+@media screen and (max-width: 991px) {
+  /* CSS для ширины от 768px до 991px */
+  .modal {
+    width: 600px;
+    padding: 15px;
+    justify-content: center;
+    overflow: scroll;
+  }
+
+  .card {
+    margin: 0 15px 15px 0;
+    margin-top: 0;
+    height: 270px;
+    width: 250px;
+
+    &__img {
+      width: 100px;
+    }
+  }
+}
+
+/* sm-размер (<=768px) */
+@media screen and (max-width: 767px) {
+  /* CSS для ширины от 576px до 767px */
+  .modal {
+    width: 520px;
+    height: 90vh;
+  }
+
+  .card {
+    height: 265px;
+    width: 240px;
+  }
+}
+
+/* xs-размер (<=575px) */
+@media screen and (max-width: 575px) {
+  .modal {
+    width: 260px;
+
+    &__close{
+      font-size: 16px;
+    }
+  }
+
+  .card {
+    height: 265px;
+    width: 250px;
+  }
 }
 </style>

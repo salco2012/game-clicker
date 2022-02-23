@@ -16,7 +16,10 @@
         >
           Да
         </button>
-        <button class="buttons-wrapper__btn-no" @click="$emit('no-reset-progress')">
+        <button
+          class="buttons-wrapper__btn-no"
+          @click="$emit('no-reset-progress')"
+        >
           Нет
         </button>
       </div>
@@ -37,6 +40,7 @@ export default {
 <style lang="scss" scoped>
 .factor-modal {
   position: relative;
+  width: 600px;
   &__close {
     cursor: pointer;
     border: none;
@@ -53,7 +57,6 @@ export default {
   border-radius: 20px;
   color: black;
   &__title {
-    width: 600px;
     color: black;
     font-size: 22px;
     font-weight: normal;
@@ -113,5 +116,43 @@ export default {
 
 .hide {
   display: none;
+}
+
+// Adaptive
+/* sm-размер (<=768px) */
+@media screen and (max-width: 767px) {
+  /* CSS для ширины от 576px до 767px */
+  .factor-modal {
+    width: 500px;
+  }
+}
+
+/* xs-размер (<=575px) */
+@media screen and (max-width: 575px) {
+  .factor-modal {
+    width: 240px;
+
+    &__title {
+      font-size: 18px;
+    }
+
+    &__description {
+      font-size: 24px;
+    }
+
+    &__close {
+      font-size: 16px;
+    }
+  }
+
+  .buttons-wrapper {
+    &__btn-yes {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    &__btn-no {
+      width: 100%;
+    }
+  }
 }
 </style>

@@ -146,4 +146,54 @@ export default {
     }
   }
 }
+
+// Adaptive 
+/* lg-размер (<=1199px) */
+@media screen and (max-width: 1700px) {
+  .business {
+    margin: 10px ;
+  }
+  /* CSS для ширины от 1200px до 1700px */
+}
+
+@media screen and (max-width: 1199px) {
+  /* CSS для ширины от 992px до 1199px */
+}
+
+/* md-размер (<=991px) */
+@media screen and (max-width: 991px) {
+  /* CSS для ширины от 768px до 991px */
+}
+
+/* sm-размер (<=768px) */
+@media screen and (max-width: 767px) {
+  /* CSS для ширины от 576px до 767px */
+    .business {
+    width: 540px;
+  }
+}
+
+/* xs-размер (<=575px) */
+@media screen and (max-width: 575px) {
+  /* CSS для ширины jn 320 до 575px (включительно) */
+  .business {
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    height: 400px;
+    width: 300px;
+
+    &__buy {
+      margin: 0 auto;
+      width:100%;
+    }
+
+    &__img {
+      width: 300px;
+      height: 200px;
+      margin: 0;
+      border-radius: 20px 20px 0 0;
+    }
+  }
+}
 </style>
