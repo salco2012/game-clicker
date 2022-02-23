@@ -20,8 +20,6 @@ With a balance of more than 1 million, a chest of gold ignites and a congratulat
 To view a live example, :point_right:[click here](https://salco2012.github.io/game-clicker/)
 
 ---
-### Notes
-Adaptive version will be added later
 ## Authors
 
 - **Igor Solodovnick** - https://github.com/salco2012
