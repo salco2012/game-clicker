@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath: '/game-clicker/',
   css: {
     loaderOptions: {
       scss: {
