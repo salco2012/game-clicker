@@ -7,7 +7,7 @@
       </div>
       <button
         class="income-factor__reset-progress"
-        :disabled="multiplierAllowed"
+        :disabled="!multiplierAllowed"
         :title="`Необходимо накопить: ${priceReset} монет `"
         @click="increaseMultiplier"
       >
