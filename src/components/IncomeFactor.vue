@@ -7,7 +7,7 @@
       </div>
       <button
         class="income-factor__reset-progress"
-        :disabled="!multiplierAllowed"
+        :disabled="multiplierAllowed"
         :title="`Необходимо накопить: ${priceReset} монет `"
         @click="increaseMultiplier"
       >
@@ -59,25 +59,14 @@ export default {
     increaseMultiplier() {
       this.isHideModal = false;
       this.addAudioPlay(soundClick);
-      this.IsHiddenBodyScroll();
     },
     noReset() {
       this.isHideModal = true;
       this.addAudioPlay(soundClick);
-      this.isAvailableBodyScroll();
     },
     closeModal() {
       this.isHideModal = true;
       this.addAudioPlay(soundClosePopup);
-      this.isAvailableBodyScroll();
-    },
-    IsHiddenBodyScroll() {
-      const body = document.querySelector('body');
-      body.style.overflow = 'hidden';
-    },
-    isAvailableBodyScroll() {
-      const body = document.querySelector('body');
-      body.style.overflow = 'visible';
     },
   },
   computed: {

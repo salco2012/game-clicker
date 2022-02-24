@@ -206,7 +206,6 @@ export default {
 
       this.$refs.UpgradeModal.resetCardProgress();
 
-      this.isAvailableBodyScroll();
 
       // Перезаписал данные которые были при инициализации. Так как при удалении из localStorage данные реактивно не обновятся. Доп. вариант переписать все на VueX, возможно потом переделаю.
       this.allBusiness = [
@@ -286,7 +285,6 @@ export default {
     upgradeMenu() {
       this.windowUpgradeIsActive = true;
       this.addAudioPlay(soundPopup);
-      this.IsHiddenBodyScroll();
     },
     addAudioPlay(nameAudio) {
       const audio = new Audio(nameAudio);
@@ -297,7 +295,6 @@ export default {
 
       this.addAudioPlay(soundClosePopup);
 
-      this.isAvailableBodyScroll();
     },
     buyUpgrade({ title, priceUpgrade, increaseInClick, intervalReduction }) {
       this.addAudioPlay(soundClick);
@@ -342,14 +339,6 @@ export default {
         this.userInfo.balans +=
           this.userInfo.passiveIncome * this.userInfo.factor;
       }, this.incomeInterval);
-    },
-    IsHiddenBodyScroll() {
-      const body = document.querySelector('body');
-      body.style.overflow = 'hidden';
-    },
-    isAvailableBodyScroll() {
-      const body = document.querySelector('body');
-      body.style.overflow = 'visible';
     },
   },
   computed: {
